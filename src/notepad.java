@@ -8,50 +8,52 @@ import java.util.Scanner;
 import java.io.*;
 
 public class notepad {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         Scanner inp = new Scanner(System.in);
         System.out.println("*****************NOTEPAD*******************");
-        String metin = inp.nextLine();
 
         File notlar = new File("notlar.txt");
 
-        if(notlar.exists()){
+        if (notlar.exists()) {
             System.out.println("Dosya mevcut.");
-        }
-        else{
+        } else {
             notlar.createNewFile();
             System.out.println("Yeni dosya olusturuldu.");
         }
 
-        try{
-            FileWriter fileWriter = new FileWriter("notlar.txt");
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.print(metin);
-            printWriter.close();
-        }
-        catch (IOException e){
-            e.getStackTrace();
-        }
-
-
         try {
+            // En son kaydedilen metni oku
             FileReader fileReader = new FileReader("notlar.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String okunanMetin = bufferedReader.readLine();
 
             // ------ OPSİYONEL --------
-            ArrayList<String> metinListesi = new ArrayList<>(); //saklamak icin bir arrayList olustur
-            while (okunanMetin != null) { //dosyadan okunan verileri boş degilse arrayList'e ekle
+            ArrayList<String> metinListesi = new ArrayList<>(); // saklamak için bir arrayList oluştur
+            while (okunanMetin!= null) { // dosyadan okunan verileri boş değilse arrayList'e ekle
                 metinListesi.add(okunanMetin);
                 okunanMetin = bufferedReader.readLine();
             }
+
+            System.out.println("En son kaydedilen metin:");
             for (String satir : metinListesi) {
                 System.out.println(satir);
             }
+
             bufferedReader.close();
-        }
-        catch(IOException e){
-            e.getStackTrace();
+
+            // Kullanıcıdan metin girişi al
+            System.out.print("Metin giriniz: ");
+            String inputText = inp.nextLine();
+
+            // Metni dosyaya kaydet
+            FileWriter fileWriter = new FileWriter("notlar.txt", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(inputText + "\n");
+            bufferedWriter.close();
+
+            System.out.println("Metin başarıyla kaydedildi!");
+        } catch (IOException e) {
+            System.err.println("Hata: " + e.getMessage());
         }
     }
 }
